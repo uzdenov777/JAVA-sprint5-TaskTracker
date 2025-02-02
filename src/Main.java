@@ -1,3 +1,10 @@
+import manager.Managers;
+import manager.interfaces.TaskManager;
+import task.Epic;
+import task.StatusTask;
+import task.Subtask;
+import task.Task;
+
 public class Main {
     public static void main(String[] args) {
         TaskManager manager = Managers.getDefault();

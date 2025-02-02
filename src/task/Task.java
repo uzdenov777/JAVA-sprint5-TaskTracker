@@ -1,11 +1,13 @@
-class Task {
+package task;
+
+public class Task {
     private final String name;
     private final String description;
     private StatusTask status;
     private final int id;
 
 
-     Task(String name, String description, int id, StatusTask status) {
+     public Task(String name, String description, int id, StatusTask status) {
         this.name = name;
         this.description = description;
         this.id = id;
@@ -27,7 +29,7 @@ class Task {
 
     @Override
     public String toString() {
-        return "Task{" +
+        return "task.Task{" +
                 "name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", status='" + status + '\'' +

@@ -1,7 +1,9 @@
-class Subtask extends Task {
+package task;
+
+public class Subtask extends Task {
 private int idEpic;
 
-     Subtask(String name, String description, int id, StatusTask status, int idEpic) {
+     public Subtask(String name, String description, int id, StatusTask status, int idEpic) {
         super(name, description, id, status);
          this.idEpic = idEpic;
     }
