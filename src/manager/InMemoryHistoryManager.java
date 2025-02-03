@@ -19,7 +19,11 @@ public class InMemoryHistoryManager implements HistoryManager {
         if (task == null) {
             return;
         }
-        historyTask.remove(task.getId());//задача должна быть в единственном экземпляре в истории, если есть удаляем
+
+        if (historyTask.containsKey(task.getId())) {
+            Node deleteNode = historyTask.get(task.getId());
+            removeNode(deleteNode);//задача должна быть в единственном экземпляре в истории, если есть удаляем
+        }
 
         if (historyTask.size() == 10) {//Проверяет, чтобы в historyTask было не больше 10 Задач
             int idDeletingNode = first.task.getId();
@@ -32,32 +36,32 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void removeById(int id) {
+
         historyTask.remove(id);
     }
 
     @Override
     public void removeTaskAll(Map<Integer, Task> tasksMap) {
-        for (Integer taskId : tasksMap.keySet()) {
-            historyTask.remove(taskId);
-        }
+        historyTask.keySet().removeAll(tasksMap.keySet());
     }
 
     @Override
     public void removeEpicAll(Map<Integer, Epic> epicsMap) {
-        for (Integer taskId : epicsMap.keySet()) {
-            historyTask.remove(taskId);
-        }
+        historyTask.keySet().removeAll(epicsMap.keySet());
     }
 
     @Override
     public void removeSubtaskAll(Map<Integer, Subtask> subtasksMap) {
-        for (Integer taskId : subtasksMap.keySet()) {
-            historyTask.remove(taskId);
-        }
+        historyTask.keySet().removeAll(subtasksMap.keySet());
     }
 
     @Override
-    public ArrayList<Task> getHistory() {
+    public HashMap<Integer, Node> getTasksHistoryInMap() {
+        return historyTask;
+    }
+
+    @Override
+    public ArrayList<Task> getListHistory() {
         ArrayList<Task> tasks = new ArrayList<>();
         Node current = first;
         while (current != null) {
@@ -69,29 +73,34 @@ public class InMemoryHistoryManager implements HistoryManager {
 
     @Override
     public void linkLast(Task task) {
-        Node node = new Node(null, last, task);
-
+        Node nodeNew = new Node(last, task);
         if (first == null) {
-            first = node;
+            first = nodeNew;
+            historyTask.put(task.getId(), nodeNew);
+        } else if (last == null) {
+            last = nodeNew;
+            first.next = last;
+            historyTask.put(task.getId(), nodeNew);
         } else {
-            last.next = node;
-            last = node;
+            last.next = nodeNew;
+            last = nodeNew;
+            historyTask.put(task.getId(), nodeNew);
         }
-        historyTask.put(task.getId(), node);
     }
 
     @Override
     public void removeNode(Node node) {
+        int idDeletingNode = node.task.getId();
+
         if (first == node) {
-            int idDeletingNode = first.task.getId();
             first = first.next;
+            first.prev = null;
             historyTask.remove(idDeletingNode);
         } else if (last == node) {
-            int idDeletingNode = last.task.getId();
             last = last.prev;
+            last.next = null;
             historyTask.remove(idDeletingNode);
         } else {
-            int idDeletingNode = first.task.getId();
             Node previous = node.prev;
             Node next = node.next;
             previous.next = next;
@@ -101,16 +110,13 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     public class Node {
-        Node next;
+        Node next = null;
         Node prev;
         Task task;
 
-        public Node(Node next, Node prev, Task task) {
-            this.next = next;
+        public Node(Node prev, Task task) {
             this.prev = prev;
             this.task = task;
         }
     }
 }
-
-

@@ -6,6 +6,7 @@ import task.Subtask;
 import task.Task;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 
 public interface HistoryManager {
@@ -20,7 +21,9 @@ public interface HistoryManager {
 
     void removeSubtaskAll(Map<Integer, Subtask> subtasksMap);
 
-    ArrayList<Task> getHistory();
+    HashMap<Integer, Node> getTasksHistoryInMap();
+
+    ArrayList<Task> getListHistory();
 
     void linkLast(Task task);
 
