@@ -1,8 +1,11 @@
 package manager.interfaces;
 
+import manager.InMemoryHistoryManager.Node;
+import task.Epic;
+import task.Subtask;
 import task.Task;
 
-import java.util.List;
+import java.util.ArrayList;
 import java.util.Map;
 
 public interface HistoryManager {
@@ -11,8 +14,16 @@ public interface HistoryManager {
 
     void removeById(int id);
 
-    void removeAll(Map map);
+    void removeTaskAll(Map<Integer, Task> tasksMap);
 
-    List<Task> getHistory();
+    void removeEpicAll(Map<Integer, Epic> epicsMap);
+
+    void removeSubtaskAll(Map<Integer, Subtask> subtasksMap);
+
+    ArrayList<Task> getHistory();
+
+    void linkLast(Task task);
+
+    void removeNode(Node node);
 
 }
