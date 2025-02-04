@@ -8,6 +8,7 @@ import task.Task;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node first;
@@ -20,15 +21,13 @@ public class InMemoryHistoryManager implements HistoryManager {
             return;
         }
 
-        if (historyTask.containsKey(task.getId())) {
+        if (historyTask.containsKey(task.getId())) {//задача должна быть в единственном экземпляре в истории, если есть удаляем
             Node deleteNode = historyTask.get(task.getId());
-            removeNode(deleteNode);//задача должна быть в единственном экземпляре в истории, если есть удаляем
+            removeNode(deleteNode);
         }
 
         if (historyTask.size() == 10) {//Проверяет, чтобы в historyTask было не больше 10 Задач
-            int idDeletingNode = first.task.getId();
-            first = first.next;
-            historyTask.remove(idDeletingNode);
+            removeNode(first);
         }
 
         linkLast(task);
@@ -37,22 +36,44 @@ public class InMemoryHistoryManager implements HistoryManager {
     @Override
     public void removeById(int id) {
 
+        if (historyTask.containsKey(id)) {
+            removeNode(historyTask.get(id));
+        }
+
         historyTask.remove(id);
     }
 
     @Override
     public void removeTaskAll(Map<Integer, Task> tasksMap) {
-        historyTask.keySet().removeAll(tasksMap.keySet());
+
+        for (Map.Entry<Integer, Task> entry : tasksMap.entrySet()) {
+            if (historyTask.containsKey(entry.getKey())) {
+                removeNode(historyTask.get(entry.getKey()));
+                historyTask.remove(entry.getKey());
+            }
+        }
     }
 
     @Override
     public void removeEpicAll(Map<Integer, Epic> epicsMap) {
-        historyTask.keySet().removeAll(epicsMap.keySet());
+
+        for (Map.Entry<Integer, Epic> entry : epicsMap.entrySet()) {
+            if (historyTask.containsKey(entry.getKey())) {
+                removeNode(historyTask.get(entry.getKey()));
+                historyTask.remove(entry.getKey());
+            }
+        }
     }
 
     @Override
     public void removeSubtaskAll(Map<Integer, Subtask> subtasksMap) {
-        historyTask.keySet().removeAll(subtasksMap.keySet());
+
+        for (Map.Entry<Integer, Subtask> entry : subtasksMap.entrySet()) {
+            if (historyTask.containsKey(entry.getKey())) {
+                removeNode(historyTask.get(entry.getKey()));
+                historyTask.remove(entry.getKey());
+            }
+        }
     }
 
     @Override
@@ -79,9 +100,11 @@ public class InMemoryHistoryManager implements HistoryManager {
             historyTask.put(task.getId(), nodeNew);
         } else if (last == null) {
             last = nodeNew;
+            last.prev = first;
             first.next = last;
             historyTask.put(task.getId(), nodeNew);
         } else {
+            nodeNew.prev = last;
             last.next = nodeNew;
             last = nodeNew;
             historyTask.put(task.getId(), nodeNew);
@@ -117,6 +140,21 @@ public class InMemoryHistoryManager implements HistoryManager {
         public Node(Node prev, Task task) {
             this.prev = prev;
             this.task = task;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true; // если ссылки на один и тот же объект
+            if (o == null || getClass() != o.getClass()) return false;
+            Node node = (Node) o;
+            return Objects.equals(next, node.next) &&
+                    Objects.equals(prev, node.prev) &&
+                    Objects.equals(task, node.task);
+        }
+
+        @Override
+        public int hashCode() {
+            return Objects.hash(next, prev, task);
         }
     }
 }

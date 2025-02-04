@@ -24,7 +24,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public ArrayList<Task> getHistory() {
-        return historyManager.getHistory();
+        return historyManager.getListHistory();
     }
 
     @Override
@@ -53,7 +53,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearEpics() { //Удаление всех Epic.
-        historyManager.removeTaskAll(epics);
+        historyManager.removeEpicAll(epics);
         historyManager.removeSubtaskAll(subtasks);
 
         epics.clear();
@@ -62,7 +62,7 @@ public class InMemoryTaskManager implements TaskManager {
 
     @Override
     public void clearSubtasks() { //Удаление всех подзадач.
-        historyManager.removeTaskAll(subtasks);
+        historyManager.removeSubtaskAll(subtasks);
         for (Epic epic : epics.values()) {
             epic.getSubtasksArray().clear();
             StatusTask.checkStatus(epic.getId(), epics);
@@ -85,7 +85,7 @@ public class InMemoryTaskManager implements TaskManager {
     public Optional<Epic> getEpic(int id) { //Получение Epic по идентификатору.
 
         if (epics.containsKey(id)) { //Проверяет если такой ID в Epic.
-            historyManager.add(epics.get(id));
+             historyManager.add(epics.get(id));
         } else {
             System.out.println("Не существует такого ID Epic");
         }
