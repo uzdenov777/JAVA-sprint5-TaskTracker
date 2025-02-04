@@ -2,7 +2,7 @@ package task;
 
 import java.util.HashMap;
 
- public enum StatusTask {
+public enum StatusTask {
     NEW,
     IN_PROGRESS,
     DONE;

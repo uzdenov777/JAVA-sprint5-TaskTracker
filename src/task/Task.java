@@ -33,12 +33,14 @@ public class Task {
         return id;
     }
 
-    public StatusTask getStatus(){
-        if (status == null){return null;}
+    public StatusTask getStatus() {
+        if (status == null) {
+            return null;
+        }
         return status;
     }
 
-    public void setStatus(StatusTask status){
+    public void setStatus(StatusTask status) {
         this.status = status;
     }
 

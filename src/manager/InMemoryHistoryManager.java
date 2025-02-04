@@ -16,7 +16,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     private final HashMap<Integer, Node> historyTask = new HashMap<>();//Хранит последние 10 просмотренных пользователем задач.
 
     @Override
-    public void add(Task task) {
+    public void add(Task task) {//вызывается при getTask, getEpic, getSubtask
         if (task == null) {
             return;
         }
@@ -26,7 +26,7 @@ public class InMemoryHistoryManager implements HistoryManager {
             removeNode(deleteNode);
         }
 
-        if (historyTask.size() == 10) {//Проверяет, чтобы в historyTask было не больше 10 Задач
+        if (historyTask.size() == 10) {//Проверяет, чтобы в historyTask было не больше 10 Задач, в худшем удаляет первый элемент
             removeNode(first);
         }
 
@@ -34,7 +34,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeById(int id) {
+    public void removeById(int id) {//удаляет запись по ID
 
         if (historyTask.containsKey(id)) {
             removeNode(historyTask.get(id));
@@ -44,7 +44,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeTaskAll(Map<Integer, Task> tasksMap) {
+    public void removeTaskAll(Map<Integer, Task> tasksMap) {//удаляет все Задачи
 
         for (Map.Entry<Integer, Task> entry : tasksMap.entrySet()) {
             if (historyTask.containsKey(entry.getKey())) {
@@ -55,7 +55,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeEpicAll(Map<Integer, Epic> epicsMap) {
+    public void removeEpicAll(Map<Integer, Epic> epicsMap) {//удаляет все Epic
 
         for (Map.Entry<Integer, Epic> entry : epicsMap.entrySet()) {
             if (historyTask.containsKey(entry.getKey())) {
@@ -66,7 +66,7 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeSubtaskAll(Map<Integer, Subtask> subtasksMap) {
+    public void removeSubtaskAll(Map<Integer, Subtask> subtasksMap) {//удаляет все подзадачи
 
         for (Map.Entry<Integer, Subtask> entry : subtasksMap.entrySet()) {
             if (historyTask.containsKey(entry.getKey())) {
@@ -77,12 +77,12 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public HashMap<Integer, Node> getTasksHistoryInMap() {
+    public HashMap<Integer, Node> getTasksHistoryInMap() {// возвращает хэш таблицу historyTask
         return historyTask;
     }
 
     @Override
-    public ArrayList<Task> getListHistory() {
+    public ArrayList<Task> getListHistory() {// заполняет List последовательно от старого к новому просмотру задач
         ArrayList<Task> tasks = new ArrayList<>();
         Node current = first;
         while (current != null) {
@@ -93,18 +93,18 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void linkLast(Task task) {
+    public void linkLast(Task task) {// добавляет в конец списка
         Node nodeNew = new Node(last, task);
-        if (first == null) {
+        if (first == null) { // истина когда ни одной записи нет
             first = nodeNew;
             historyTask.put(task.getId(), nodeNew);
-        } else if (last == null) {
+        } else if (last == null) {// истина когда есть только одна запись - first и нужно добавить вторую запись
             last = nodeNew;
             last.prev = first;
             first.next = last;
             historyTask.put(task.getId(), nodeNew);
         } else {
-            nodeNew.prev = last;
+            nodeNew.prev = last; //добавляет в конец списка
             last.next = nodeNew;
             last = nodeNew;
             historyTask.put(task.getId(), nodeNew);
@@ -112,19 +112,19 @@ public class InMemoryHistoryManager implements HistoryManager {
     }
 
     @Override
-    public void removeNode(Node node) {
+    public void removeNode(Node node) {// вырезает запись
         int idDeletingNode = node.task.getId();
 
-        if (first == node) {
+        if (first == node) { //вырезает начало
             first = first.next;
             first.prev = null;
             historyTask.remove(idDeletingNode);
-        } else if (last == node) {
+        } else if (last == node) {// вырезает конец
             last = last.prev;
             last.next = null;
             historyTask.remove(idDeletingNode);
         } else {
-            Node previous = node.prev;
+            Node previous = node.prev;// вырезает между - среднюю запись
             Node next = node.next;
             previous.next = next;
             next.prev = previous;
