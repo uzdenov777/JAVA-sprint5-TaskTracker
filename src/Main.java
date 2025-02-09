@@ -56,7 +56,7 @@ public class Main {
         }
         System.out.println(manager.getHistory().size());
 
-        manager.removeEpicById(epic1.getId());
+        manager.clearEpics();
 
         for (Task task : manager.getHistory()) {
             System.out.println(task);

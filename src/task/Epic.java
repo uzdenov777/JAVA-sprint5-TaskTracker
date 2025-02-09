@@ -4,18 +4,18 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class Epic extends Task {
-    private final HashMap<Integer, Subtask> subtaskArray = new HashMap<>();
+    private final HashMap<Integer, Subtask> subtaskHashMap = new HashMap<>();
 
     public Epic(String name, String description, int id, StatusTask status) {
         super(name, description, id, status);
     }
 
     public void addSubtask(Subtask subtask) {
-        subtaskArray.put(subtask.getId(), subtask);
+        subtaskHashMap.put(subtask.getId(), subtask);
     }
 
     public HashMap<Integer, Subtask> getSubtasksArray() {
-        return subtaskArray;
+        return subtaskHashMap;
     }
 
     @Override
@@ -24,11 +24,11 @@ public class Epic extends Task {
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         Epic epic = (Epic) o;
-        return Objects.equals(subtaskArray, epic.subtaskArray);
+        return Objects.equals(subtaskHashMap, epic.subtaskHashMap);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), subtaskArray);
+        return Objects.hash(super.hashCode(), subtaskHashMap);
     }
 }
